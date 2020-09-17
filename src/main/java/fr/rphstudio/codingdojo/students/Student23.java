@@ -26,7 +26,7 @@ public class Student23 extends PodPlugIn {
 
         float batterie = getShipBatteryLevel();
 
-        if (batterie < 15) {
+        if (batterie < 20) {
             charge = true;
         } else if (batterie > 95) {
             charge = false;
