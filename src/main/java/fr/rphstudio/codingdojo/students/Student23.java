@@ -22,6 +22,25 @@ public class Student23 extends PodPlugIn {
 
     boolean charge = true;
 
+    float distanceBetween(float x0, float y0, float x1, float y1) {
+        float dX = x1 - x0;
+        float dY = y1 - y0;
+
+        return sqrt((dX * dX) + (dY * dY));
+    }
+
+    int getFirstCharging() {
+
+        int nbcheckpointmax = getNbRaceCheckPoints(); // Récupération du nombre maximum du checkpoint
+        int checkcharge = 0;
+        for (int I = 0; I < nbcheckpointmax; I++) {
+            if (isCheckPointCharging(I)) {
+                checkcharge = I;
+            }
+        }
+        return checkcharge;
+    }
+
     boolean updateCharging2() {
 
         float batterie = getShipBatteryLevel();
@@ -41,16 +60,15 @@ public class Student23 extends PodPlugIn {
 
     float MouvCharge() {
 
-        float nbcheckpointmax = getNbRaceCheckPoints(); // Récupération du nombre maximum du checkpoint
-        int I;
+        int nbcheckpointmax = getNbRaceCheckPoints(); // Récupération du nombre maximum du checkpoint
         int checkcharge = 0;
-        for (I = 0; I < nbcheckpointmax; I++) {
+        for (int I = 0; I < nbcheckpointmax; I++) {
             if (isCheckPointCharging(I)) {
                 checkcharge = I;
             }
         }
 
-        float AngleChargeShip= getShipAngle();
+        float AngleChargeShip = getShipAngle();
         float shipX = getShipPositionX(); // Récupération de la position X du bateau
         float shipY = getShipPositionY(); // Récupération de la position Y du bateau
         float ChargeX = getCheckPointX(checkcharge);
@@ -61,7 +79,7 @@ public class Student23 extends PodPlugIn {
 
     }
 
-    float MouvCheck () {
+    float MouvCheck() {
 
         int nextCheckPoint = getNextCheckPointIndex(); // Récupération postion du prochaine checkpoint
 
@@ -79,6 +97,8 @@ public class Student23 extends PodPlugIn {
 
     }
 
+    float speed;
+
     // END OF VARIABLES/FUNCTIONS AREA
     //-------------------------------------------------------
 
@@ -89,14 +109,37 @@ public class Student23 extends PodPlugIn {
 
         setPlayerName("Amandine");
         selectShip(8);
-        setPlayerColor(43, 59, 236, 200);
+        setPlayerColor(43, 59, 236, 255);
 
-        if (updateCharging2()) {
+        float DistanceCheck = distanceBetween(getShipPositionX(), getShipPositionY(), getCheckPointX(getNextCheckPointIndex()), getCheckPointY(getNextCheckPointIndex()));
+        float DistanceCharge = distanceBetween(getShipPositionX(), getShipPositionY(), getCheckPointX(getFirstCharging()), getCheckPointY(getFirstCharging()));
+
+        if (updateCharging2() == true) {
             turn(MouvCharge());
-            accelerateOrBrake(0.75f);
+            setPlayerColor(255, 255, 255, 255);
+            if (DistanceCharge < 1f) {
+                speed = -0.39f;
+                setPlayerColor(32, 213, 224, 255);
+            } else if (DistanceCharge > 2f) {
+                speed = 0.75f;
+                setPlayerColor(255, 255, 255, 255);
+            } else {
+                speed = 0.75f;
+            }
+            accelerateOrBrake(speed);
         } else {
             turn(MouvCheck());
-            accelerateOrBrake(0.75f);
+            if (DistanceCheck < 1f) {
+                speed = -0.39f;
+                setPlayerColor(171, 0, 0, 255);
+            } else if (DistanceCheck > 2f) {
+                speed = 0.75f;
+                setPlayerColor(253, 0, 0, 255);
+            } else {
+                speed = 0.75f;
+                setPlayerColor(32, 213, 0, 255);
+            }
+            accelerateOrBrake(speed);
         }
 
 
